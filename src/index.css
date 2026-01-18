@@ -1,0 +1,13 @@
+@import 'tailwindcss';
+
+@theme {
+  --color-app-bg: #ffffff;
+  --color-app-loading-bg: rgba(255, 255, 255, 0.6);
+  --color-app-text: #1a1a1a;
+}
+
+.dark {
+  --color-app-bg: #121212;
+  --color-app-loading-bg: rgba(18, 18, 18, 0.7); /* 深色加载遮罩 */
+  --color-app-text: #f3f4f6;
+}
