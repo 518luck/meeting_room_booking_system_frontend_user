@@ -15,14 +15,22 @@ export interface UserInfo {
   permissions: string; // 如果有多个权限，通常是逗号分隔的字符串
 }
 
-export interface LoginResponse {
-  userInfo: UserInfo; // 保持与后端 JSON 键名一致
+export interface LoginDataResponse {
   accessToken: string;
   refreshToken: string;
+  userInfo: UserInfo;
+}
+export interface LoginResponse {
+  code: number;
+  data: LoginDataResponse;
+  message: string;
 }
 
-export async function login(username: string, password: string) {
-  return await axiosInstance.post<LoginResponse>('/user/login', {
+export async function login(
+  username: string,
+  password: string,
+): Promise<LoginResponse> {
+  return await axiosInstance.post('/user/login', {
     username,
     password,
   });
@@ -52,6 +60,13 @@ export interface RegisterParams {
   email: string; // 邮箱地址
   captcha: string; // 验证码（通常是 4-6 位字符或数字）
 }
-export async function register(registerUser: RegisterParams) {
+export interface RegisterResponse {
+  code: number;
+  data: string;
+  message: string;
+}
+export async function register(
+  registerUser: RegisterParams,
+): Promise<RegisterResponse> {
   return await axiosInstance.post('/user/register', registerUser);
 }

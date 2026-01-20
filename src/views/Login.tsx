@@ -1,7 +1,9 @@
-import { Button, Form, Input } from 'antd';
+import { Button, Form, Input, message } from 'antd';
 import type { FormProps } from 'antd';
 import { login } from '@/api/login';
 import { useAuthStore } from '@/store/auth';
+import { useNavigate } from 'react-router-dom';
+import { throttle } from 'lodash-es';
 
 interface LoginUser {
   username?: string;
@@ -10,6 +12,7 @@ interface LoginUser {
 
 const Login = () => {
   const setAuth = useAuthStore((state) => state.setAuth);
+  const navigate = useNavigate();
 
   const onFinish: FormProps<LoginUser>['onFinish'] = async (values) => {
     if (!values.username || !values.password) {
@@ -18,7 +21,10 @@ const Login = () => {
     const { username, password } = values;
 
     const res = await login(username, password);
-
+    if (res.code !== 201) {
+      message.error(res.message || '登录失败');
+      return;
+    }
     if (res.data) {
       const { accessToken, refreshToken, userInfo } = res.data;
 
@@ -27,11 +33,17 @@ const Login = () => {
         refreshToken,
         userInfo,
       });
+
+      message.success('登录成功');
+
+      setTimeout(() => {
+        navigate('/');
+      }, 1000);
     }
   };
+  const throttledSendCaptcha = throttle(onFinish, 3000, { trailing: false });
 
   return (
-    /* 💡 核心改动：使用 bg-app-bg 确保跟随 html.dark 切换背景 */
     <div className="flex">
       <div className="bg-app-bg mx-auto mt-24 w-96 rounded-2xl border border-gray-100 p-8 shadow-2xl transition-all duration-500 dark:border-zinc-800">
         <h1 className="text-app-text mb-8 text-center text-3xl font-bold tracking-tight">
@@ -40,8 +52,8 @@ const Login = () => {
 
         <Form
           name="login"
-          layout="vertical" // 💡 垂直布局是登录页的最佳范式
-          onFinish={onFinish}
+          layout="vertical"
+          onFinish={throttledSendCaptcha}
           autoComplete="off"
           requiredMark={false}
         >
@@ -50,7 +62,6 @@ const Login = () => {
             name="username"
             rules={[{ required: true, message: '请输入用户名!' }]}
           >
-            {/* 💡 size="large" 增加交互区域面积 */}
             <Input
               size="large"
               placeholder="请输入用户名"
@@ -74,13 +85,13 @@ const Login = () => {
             <div className="flex items-center justify-between text-sm">
               <a
                 className="text-blue-600 transition-colors hover:text-blue-500"
-                href=""
+                onClick={() => navigate('/register')}
               >
                 创建账号
               </a>
               <a
                 className="text-gray-400 transition-colors hover:text-gray-300"
-                href=""
+                onClick={() => navigate('/update_password')}
               >
                 忘记密码
               </a>

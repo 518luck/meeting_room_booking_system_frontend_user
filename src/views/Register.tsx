@@ -1,6 +1,9 @@
 import { Button, Form, Input, message } from 'antd';
 import type { FormProps } from 'antd';
-import { registerCaptcha } from '@/api/login';
+import { register, registerCaptcha } from '@/api/login';
+import { useState, useEffect } from 'react';
+import { throttle } from 'lodash-es';
+import { useNavigate } from 'react-router-dom';
 
 export interface RegisterUser {
   username: string;
@@ -13,21 +16,48 @@ export interface RegisterUser {
 
 const Register = () => {
   const [form] = Form.useForm();
+  const [countdown, setCountdown] = useState(0);
+  const navigate = useNavigate();
 
+  useEffect(() => {
+    if (countdown > 0) {
+      const timer = setTimeout(() => setCountdown(countdown - 1), 1000);
+      return () => clearTimeout(timer);
+    }
+  }, [countdown]);
+
+  // 注册
   const onFinish: FormProps<RegisterUser>['onFinish'] = async (values) => {
-    console.log(values);
+    if (values.confirmPassword !== values.password) {
+      message.error('两次密码输入不一致');
+      return;
+    }
+    const res = await register(values);
+    if (res.code === 201) {
+      message.success('注册成功');
+      setTimeout(() => {
+        navigate('/login');
+      }, 1500);
+    } else {
+      message.error(res.message || '注册失败');
+    }
   };
+  const throttledOnFinish = throttle(onFinish, 5000, { trailing: false });
 
+  // 发送验证码
   const sendCaptcha = async () => {
     const email = form.getFieldValue('email');
     const res = await registerCaptcha(email);
-    console.log('🚀 ~ sendCaptcha ~ res:', res);
     if (res.code === 200) {
       message.success('验证码发送成功');
+      setCountdown(60);
     } else {
       message.error(res.message || '验证码发送失败');
     }
   };
+  const throttledSendCaptcha = throttle(sendCaptcha, 50000, {
+    trailing: false,
+  });
 
   return (
     <div className="flex">
@@ -39,7 +69,7 @@ const Register = () => {
         <Form
           name="register"
           layout="vertical"
-          onFinish={onFinish}
+          onFinish={throttledOnFinish}
           autoComplete="off"
           requiredMark={false}
           form={form}
@@ -118,8 +148,13 @@ const Register = () => {
                 placeholder="请输入验证码"
                 className="flex-1 rounded-lg"
               />
-              <Button size="large" className="rounded-lg" onClick={sendCaptcha}>
-                发送验证码
+              <Button
+                size="large"
+                className="rounded-lg"
+                onClick={throttledSendCaptcha}
+                disabled={countdown > 0}
+              >
+                {countdown > 0 ? `${countdown}秒` : '发送验证码'}
               </Button>
             </div>
           </Form.Item>
@@ -130,7 +165,7 @@ const Register = () => {
                 已有账号？
                 <a
                   className="ml-1 text-blue-600 transition-colors hover:text-blue-500"
-                  href=""
+                  onClick={() => navigate('/login')}
                 >
                   去登录
                 </a>
