@@ -4,10 +4,12 @@ import { RouterProvider } from 'react-router-dom';
 import router from '@/routers/index';
 
 function App() {
-  // 1. 定义 React 状态
-  const [isDark, setIsDark] = useState(false);
+  // 主题切换变量
+  const [isDark, setIsDark] = useState(() => {
+    return window.matchMedia('(prefers-color-scheme: dark)').matches;
+  });
 
-  // 2. 这里的 useEffect 相当于你那个 toggle 函数的逻辑
+  // 进入界面加载
   useEffect(() => {
     if (isDark) {
       document.documentElement.classList.add('dark');
@@ -19,7 +21,6 @@ function App() {
   return (
     <ConfigProvider
       theme={{
-        // 3. 根据状态切换 antd 算法
         algorithm: isDark ? theme.darkAlgorithm : theme.defaultAlgorithm,
         token: {
           colorPrimary: '#1677ff',

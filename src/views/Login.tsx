@@ -1,5 +1,6 @@
 import { Button, Form, Input } from 'antd';
 import type { FormProps } from 'antd';
+import { login } from '@/api/login';
 
 interface LoginUser {
   username?: string;
@@ -7,8 +8,15 @@ interface LoginUser {
 }
 
 const Login = () => {
-  const onFinish: FormProps<LoginUser>['onFinish'] = (values) => {
-    console.log('Success:', values);
+  const onFinish: FormProps<LoginUser>['onFinish'] = async (values) => {
+    if (!values.username || !values.password) {
+      return;
+    }
+    const { username, password } = values;
+
+    const res = await login(username, password);
+
+    console.log('🚀 ~ onFinish ~ res:', res);
   };
 
   return (
