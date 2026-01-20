@@ -1,6 +1,7 @@
 import { Button, Form, Input } from 'antd';
 import type { FormProps } from 'antd';
 import { login } from '@/api/login';
+import { useAuthStore } from '@/store/auth';
 
 interface LoginUser {
   username?: string;
@@ -8,6 +9,8 @@ interface LoginUser {
 }
 
 const Login = () => {
+  const setAuth = useAuthStore((state) => state.setAuth);
+
   const onFinish: FormProps<LoginUser>['onFinish'] = async (values) => {
     if (!values.username || !values.password) {
       return;
@@ -16,7 +19,15 @@ const Login = () => {
 
     const res = await login(username, password);
 
-    console.log('🚀 ~ onFinish ~ res:', res);
+    if (res.data) {
+      const { accessToken, refreshToken, userInfo } = res.data;
+
+      setAuth({
+        accessToken,
+        refreshToken,
+        userInfo,
+      });
+    }
   };
 
   return (

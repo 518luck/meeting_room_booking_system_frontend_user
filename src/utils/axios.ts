@@ -8,10 +8,6 @@ const axiosInstance = axios.create({
 
 axiosInstance.interceptors.request.use(
   (config) => {
-    const token = localStorage.getItem('token');
-    if (token) {
-      config.headers.Authorization = `Bearer ${token}`;
-    }
     return config;
   },
   (error) => {
@@ -21,7 +17,7 @@ axiosInstance.interceptors.request.use(
 
 axiosInstance.interceptors.response.use(
   (response) => {
-    return response;
+    return response.data;
   },
   (error) => {
     message.error(error.response?.data?.data || '请求失败');

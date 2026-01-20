@@ -1,0 +1,34 @@
+import { create } from 'zustand';
+import { persist } from 'zustand/middleware';
+import type { UserInfo, LoginResponse } from '@/api/login';
+
+interface AuthState {
+  accessToken: string | null;
+  refreshToken: string | null;
+  userInfo: UserInfo | null;
+  setAuth: (data: LoginResponse) => void;
+  clearAuth: () => void;
+}
+
+// 用户认证状态管理
+export const useAuthStore = create<AuthState>()(
+  persist(
+    (set) => ({
+      accessToken: null,
+      refreshToken: null,
+      userInfo: null,
+
+      setAuth: ({ accessToken, refreshToken, userInfo }) =>
+        set({
+          accessToken,
+          refreshToken,
+          userInfo,
+        }),
+      clearAuth: () =>
+        set({ accessToken: null, refreshToken: null, userInfo: null }),
+    }),
+    {
+      name: 'auth-storage',
+    },
+  ),
+);
