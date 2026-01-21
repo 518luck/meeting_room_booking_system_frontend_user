@@ -44,7 +44,7 @@ const UpdatePassword = () => {
       if (res.code === 201 || res.code === 200) {
         message.success('密码修改成功');
         setTimeout(() => {
-          navigate('/login');
+          navigate('/auth/login');
         }, 1500);
       } else {
         message.error(res.message || '密码修改失败');
@@ -163,7 +163,7 @@ const UpdatePassword = () => {
                 想起密码了？
                 <a
                   className="ml-1 text-blue-600 transition-colors hover:text-blue-500"
-                  onClick={() => navigate('/login')}
+                  onClick={() => navigate('/auth/login')}
                 >
                   去登录
                 </a>

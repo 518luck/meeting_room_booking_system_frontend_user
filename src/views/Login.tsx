@@ -89,13 +89,13 @@ const Login = () => {
             <div className="flex items-center justify-between text-sm">
               <a
                 className="text-blue-600 transition-colors hover:text-blue-500"
-                onClick={() => navigate('/register')}
+                onClick={() => navigate('/auth/register')}
               >
                 创建账号
               </a>
               <a
                 className="text-gray-400 transition-colors hover:text-gray-300"
-                onClick={() => navigate('/update_password')}
+                onClick={() => navigate('/auth/update_password')}
               >
                 忘记密码
               </a>

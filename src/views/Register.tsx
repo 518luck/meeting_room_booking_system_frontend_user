@@ -36,7 +36,7 @@ const Register = () => {
     if (res.code === 201) {
       message.success('注册成功');
       setTimeout(() => {
-        navigate('/login');
+        navigate('/auth/login');
       }, 1500);
     } else {
       message.error(res.message || '注册失败');
@@ -165,7 +165,7 @@ const Register = () => {
                 已有账号？
                 <a
                   className="ml-1 text-blue-600 transition-colors hover:text-blue-500"
-                  onClick={() => navigate('/login')}
+                  onClick={() => navigate('/auth/login')}
                 >
                   去登录
                 </a>
