@@ -31,18 +31,19 @@ axiosInstance.interceptors.response.use(
     return response.data;
   },
   (error) => {
+    console.log('🚀 ~ error:', error);
+    let { data, config } = error.response;
     // 处理 401 未授权错误
-    if (error.response?.status === 401) {
-      // 清除认证信息
-      useAuthStore.getState().clearAuth();
-      // 跳转到登录页
-      window.location.href = '/auth/login';
-      message.error('登录已过期，请重新登录');
-      return Promise.reject(error);
-    }
-
-    message.error(error.response?.data?.data || '请求失败');
-    return Promise.reject(error);
+    // if (error.response?.status === 401) {
+    //   // 清除认证信息
+    //   useAuthStore.getState().clearAuth();
+    //   // 跳转到登录页
+    //   window.location.href = '/auth/login';
+    //   message.error('登录已过期，请重新登录');
+    //   return Promise.reject(error);
+    // }
+    // message.error(error.response?.data?.data || '请求失败');
+    // return Promise.reject(error);
   },
 );
 

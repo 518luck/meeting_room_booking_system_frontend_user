@@ -14,7 +14,7 @@ const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ children }) => {
 
   if (!accessToken) {
     // 未登录，重定向到登录页
-    return <Navigate to="/login" replace />;
+    // return <Navigate to="/login" replace />;
   }
 
   return <>{children}</>;
