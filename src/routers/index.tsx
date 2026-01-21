@@ -1,17 +1,17 @@
-import { createBrowserRouter, type RouteObject } from "react-router-dom";
-import ErrorPage from "@/views/ErrorPage";
-import RootLayout from "@/Layouts/RootLayout";
-import longRouter from "./long";
+import { createBrowserRouter, type RouteObject } from 'react-router-dom';
+import ErrorPage from '@/views/ErrorPage';
+import RootLayout from '@/Layouts/RootLayout';
+import longRouter from './long';
 
 const routers: RouteObject[] = [
   {
-    path: "/",
+    path: '/',
     Component: RootLayout,
     children: [
       {
         index: true,
         lazy: async () => {
-          const module = await import("@/views/Home");
+          const module = await import('@/views/Home');
           return { Component: module.default };
         },
       },
@@ -19,7 +19,7 @@ const routers: RouteObject[] = [
     ],
   },
   {
-    path: "*",
+    path: '*',
     Component: ErrorPage,
   },
 ];
