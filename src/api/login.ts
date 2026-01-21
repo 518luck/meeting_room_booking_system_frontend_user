@@ -104,3 +104,31 @@ export async function updatePassword(
 ): Promise<UpdatePasswordResponse> {
   return await axiosInstance.post('/user/update_password', params);
 }
+
+//更新用户信息验证码
+export interface UpdateInfoCaptchaResponse {
+  code: number;
+  data: string;
+  message: string;
+}
+export async function updateInfoCaptcha(): Promise<UpdateInfoCaptchaResponse> {
+  return await axiosInstance.get('/user/update/captcha');
+}
+
+//更新用户信息
+export interface UpdateInfoParams {
+  headPic: string;
+  nickName: string;
+  email: string;
+  captcha: string;
+}
+export interface UpdateInfoResponse {
+  code: number;
+  data: string;
+  message: string;
+}
+export async function updateInfo(
+  params: UpdateInfoParams,
+): Promise<UpdateInfoResponse> {
+  return await axiosInstance.post('/user/update', params);
+}
