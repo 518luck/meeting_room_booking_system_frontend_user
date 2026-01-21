@@ -1,3 +1,4 @@
+import { useMemo } from 'react';
 import { Button, Form, Input, message } from 'antd';
 import type { FormProps } from 'antd';
 import { login } from '@/api/login';
@@ -14,34 +15,37 @@ const Login = () => {
   const setAuth = useAuthStore((state) => state.setAuth);
   const navigate = useNavigate();
 
-  const onFinish: FormProps<LoginUser>['onFinish'] = async (values) => {
-    if (!values.username || !values.password) {
-      return;
-    }
-    const { username, password } = values;
+  const throttledSendCaptcha = useMemo(() => {
+    const onFinish: FormProps<LoginUser>['onFinish'] = async (values) => {
+      if (!values.username || !values.password) {
+        return;
+      }
+      const { username, password } = values;
 
-    const res = await login(username, password);
-    if (res.code !== 201) {
-      message.error(res.message || '登录失败');
-      return;
-    }
-    if (res.data) {
-      const { accessToken, refreshToken, userInfo } = res.data;
+      const res = await login(username, password);
+      if (res.code !== 201) {
+        message.error(res.message || '登录失败');
+        return;
+      }
+      if (res.data) {
+        const { accessToken, refreshToken, userInfo } = res.data;
 
-      setAuth({
-        accessToken,
-        refreshToken,
-        userInfo,
-      });
+        setAuth({
+          accessToken,
+          refreshToken,
+          userInfo,
+        });
 
-      message.success('登录成功');
+        message.success('登录成功');
 
-      setTimeout(() => {
-        navigate('/');
-      }, 1000);
-    }
-  };
-  const throttledSendCaptcha = throttle(onFinish, 3000, { trailing: false });
+        setTimeout(() => {
+          navigate('/');
+        }, 1000);
+      }
+    };
+
+    return throttle(onFinish, 3000, { trailing: false });
+  }, [navigate, setAuth]);
 
   return (
     <div className="flex">
