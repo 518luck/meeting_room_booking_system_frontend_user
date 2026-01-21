@@ -1,13 +1,13 @@
 import { createBrowserRouter, type RouteObject } from 'react-router-dom';
 import ErrorPage from '@/views/ErrorPage';
-import RootLayout from '@/Layouts/RootLayout';
+import AuthLayout from '@/Layouts/AuthLayout';
 import MainLayout from '@/Layouts/MainLayout';
 import authRoutes from './auth';
 
 const routers: RouteObject[] = [
   {
     path: '/',
-    Component: RootLayout,
+    Component: AuthLayout,
     children: [
       // 公开路由（不需要登录）
       ...authRoutes,
@@ -21,6 +21,13 @@ const routers: RouteObject[] = [
             index: true,
             lazy: async () => {
               const module = await import('@/views/Home');
+              return { Component: module.default };
+            },
+          },
+          {
+            path: 'update-info',
+            lazy: async () => {
+              const module = await import('@/views/UpdateInfo');
               return { Component: module.default };
             },
           },

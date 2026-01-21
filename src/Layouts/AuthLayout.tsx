@@ -1,6 +1,6 @@
 import { useNavigation, Outlet } from 'react-router-dom';
 
-const RootLayout: React.FC = () => {
+const AuthLayout: React.FC = () => {
   const navigation = useNavigation();
   const isLoading = navigation.state === 'loading';
 
@@ -29,4 +29,4 @@ const RootLayout: React.FC = () => {
   );
 };
 
-export default RootLayout;
+export default AuthLayout;
