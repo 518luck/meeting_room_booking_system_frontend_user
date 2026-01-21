@@ -6,21 +6,21 @@ import type { RouteObject } from 'react-router-dom';
  */
 const authRoutes: RouteObject[] = [
   {
-    path: '/login',
+    path: 'login',
     lazy: async () => {
       const module = await import('@/views/Login');
       return { Component: module.default };
     },
   },
   {
-    path: '/register',
+    path: 'register',
     lazy: async () => {
       const module = await import('@/views/Register');
       return { Component: module.default };
     },
   },
   {
-    path: '/update_password',
+    path: 'update_password',
     lazy: async () => {
       const module = await import('@/views/UpdatePassword');
       return { Component: module.default };
