@@ -115,6 +115,26 @@ export async function updateInfoCaptcha(): Promise<UpdateInfoCaptchaResponse> {
   return await axiosInstance.get('/user/update/captcha');
 }
 
+//获取用户信息
+export interface UserInfo {
+  id: number;
+  username: string;
+  nickName: string;
+  email: string;
+  headPic: string;
+  phoneNumber: string;
+  isFrozen: boolean;
+  createTime: number;
+}
+export interface UserInfoResponse {
+  code: number;
+  data: UserInfo;
+  message: string;
+}
+export async function getUserInfo(): Promise<UserInfoResponse> {
+  return await axiosInstance.get('/user/info');
+}
+
 //更新用户信息
 export interface UpdateInfoParams {
   headPic: string;

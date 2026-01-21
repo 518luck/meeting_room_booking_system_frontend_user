@@ -1,6 +1,6 @@
 import { Button, Form, Input, message } from 'antd';
 import type { FormProps } from 'antd';
-import { updateInfo, updateInfoCaptcha } from '@/api/login';
+import { getUserInfo, updateInfo, updateInfoCaptcha } from '@/api/login';
 import { useState, useEffect } from 'react';
 import { throttle } from 'lodash-es';
 import { useNavigate } from 'react-router-dom';
@@ -25,6 +25,18 @@ const UpdateInfo = () => {
       return () => clearTimeout(timer);
     }
   }, [countdown]);
+
+  // 获取用户信息
+  useEffect(() => {
+    async function query() {
+      const res = await getUserInfo();
+
+      if (res.code === 201 || res.code === 200) {
+        console.log(res.data);
+      }
+    }
+    query();
+  }, []);
 
   // 初始化表单数据
   useEffect(() => {
