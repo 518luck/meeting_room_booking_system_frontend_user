@@ -1,6 +1,7 @@
-import axios from 'axios';
-import { message } from 'antd';
+import axios, { type AxiosRequestConfig } from 'axios';
 import { useAuthStore } from '@/store/auth';
+import { refreshToken } from '@/api/login';
+import { message } from 'antd';
 
 const axiosInstance = axios.create({
   baseURL: import.meta.env.VITE_API_BASE_URL || 'http://localhost:3000/',
@@ -9,7 +10,7 @@ const axiosInstance = axios.create({
 
 // 请求拦截器：添加 token
 axiosInstance.interceptors.request.use(
-  (config) => {
+  async (config) => {
     // 从 zustand store 中获取 token
     const accessToken = useAuthStore.getState().accessToken;
 
@@ -26,24 +27,65 @@ axiosInstance.interceptors.request.use(
 );
 
 // 响应拦截器：处理响应和错误
+interface PendingTask {
+  config: AxiosRequestConfig;
+  resolve: (value?: unknown) => void;
+}
+let refreshing = false;
+const queue: PendingTask[] = [];
 axiosInstance.interceptors.response.use(
-  (response) => {
+  async (response) => {
     return response.data;
   },
-  (error) => {
+
+  async (error) => {
     console.log('🚀 ~ error:', error);
-    let { data, config } = error.response;
-    // 处理 401 未授权错误
-    // if (error.response?.status === 401) {
-    //   // 清除认证信息
-    //   useAuthStore.getState().clearAuth();
-    //   // 跳转到登录页
-    //   window.location.href = '/auth/login';
-    //   message.error('登录已过期，请重新登录');
-    //   return Promise.reject(error);
-    // }
-    // message.error(error.response?.data?.data || '请求失败');
-    // return Promise.reject(error);
+    // config : 用户发送请求的全部配置信息
+
+    const { data, config } = error.response;
+
+    console.log('请求到了');
+    // refreshing是 true 的话就证明token可能失效了,如果处于刷新状态就把请求挂起
+    if (refreshing) {
+      console.log('请求到了1231231');
+      return new Promise((resolve) => {
+        queue.push({ config, resolve });
+      });
+    }
+
+    // config.url.includes 防止循环刷新,如果请求是 auth/refresh,则直接返回错误
+    if (data?.code === 401 && !config.url.includes('/user/refresh')) {
+      refreshing = true;
+      console.log('开始刷新 Token...');
+
+      try {
+        const refreshTokenStore = useAuthStore.getState().refreshToken || '';
+        const res = await refreshToken(refreshTokenStore);
+
+        if (res.code === 200 || res.code === 201) {
+          console.log('刷新成功，重发队列请求');
+          // 重新发送队列中的请求
+          queue.forEach(({ config, resolve }) => {
+            resolve(axiosInstance(config));
+          });
+          queue.length = 0;
+          return axiosInstance(config); // 重发当前请求
+        } else {
+          throw new Error('Refresh token invalid');
+        }
+      } catch (err) {
+        console.error('刷新 Token 彻底失败:', err);
+        queue.length = 0; // 清空队列
+        message.error('登录已过期，请重新登录');
+        setTimeout(() => {
+          window.location.href = '/auth/login';
+        }, 1500);
+        return Promise.reject(err);
+      } finally {
+        // 【关键】无论 try 成功还是 catch 报错，最后都要把锁解开
+        refreshing = false;
+      }
+    }
   },
 );
 

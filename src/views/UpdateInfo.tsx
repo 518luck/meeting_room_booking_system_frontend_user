@@ -51,7 +51,10 @@ const UpdateInfo = () => {
 
   // 更新用户信息
   const onFinish: FormProps<UpdateInfoForm>['onFinish'] = async (values) => {
+    console.log('页面更新用户');
+
     const res = await updateInfo(values);
+    console.log('🚀 ~ onFinish ~ res:', res);
     if (res.code === 200) {
       message.success('信息更新成功');
       setTimeout(() => {
@@ -61,7 +64,7 @@ const UpdateInfo = () => {
       message.error(res.message || '信息更新失败');
     }
   };
-  const throttledOnFinish = throttle(onFinish, 5000, { trailing: false });
+  const throttledOnFinish = throttle(onFinish, 500, { trailing: false });
 
   // 发送验证码
   const sendCaptcha = async () => {

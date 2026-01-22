@@ -152,3 +152,20 @@ export async function updateInfo(
 ): Promise<UpdateInfoResponse> {
   return await axiosInstance.post('/user/update', params);
 }
+
+//刷新token接口
+
+export interface RefreshTokenResponse {
+  code: number;
+  data: LoginDataResponse;
+  message: string;
+}
+export async function refreshToken(
+  refreshToken: string,
+): Promise<RefreshTokenResponse> {
+  return await axiosInstance.get('/user/refresh', {
+    params: {
+      refreshToken,
+    },
+  });
+}
