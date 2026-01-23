@@ -1,5 +1,5 @@
 import axios, { type AxiosRequestConfig } from 'axios';
-import { useAuthStore } from '@/store/auth';
+import useAuthStore from '@/store/auth';
 import { refreshToken } from '@/api/login';
 import { message } from 'antd';
 

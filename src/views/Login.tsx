@@ -2,7 +2,7 @@ import { useMemo } from 'react';
 import { Button, Form, Input, message } from 'antd';
 import type { FormProps } from 'antd';
 import { login } from '@/api/login';
-import { useAuthStore } from '@/store/auth';
+import useAuthStore from '@/store/auth';
 import { useNavigate } from 'react-router-dom';
 import { throttle } from 'lodash-es';
 

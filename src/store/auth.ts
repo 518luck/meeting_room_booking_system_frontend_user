@@ -11,7 +11,7 @@ interface AuthState {
 }
 
 // 用户认证状态管理
-export const useAuthStore = create<AuthState>()(
+const useAuthStore = create<AuthState>()(
   persist(
     (set) => ({
       accessToken: null,
@@ -32,3 +32,5 @@ export const useAuthStore = create<AuthState>()(
     },
   ),
 );
+
+export default useAuthStore;

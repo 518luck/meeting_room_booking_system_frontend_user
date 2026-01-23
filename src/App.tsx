@@ -1,13 +1,17 @@
-import { useState, useEffect } from 'react';
-import { ConfigProvider, theme, Button, App as AntdApp } from 'antd';
+import { useEffect } from 'react';
+import { ConfigProvider, theme } from 'antd';
 import { RouterProvider } from 'react-router-dom';
 import router from '@/routers/index';
+import useThemeStore from '@/store/theme';
 
 function App() {
-  // 主题切换变量
-  const [isDark, setIsDark] = useState(() => {
-    return window.matchMedia('(prefers-color-scheme: dark)').matches;
-  });
+  const isDark = useThemeStore((state) => state.isDark);
+  const setIsDark = useThemeStore((state) => state.setIsDark);
+
+  useEffect(() => {
+    const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)');
+    setIsDark(mediaQuery.matches);
+  }, [setIsDark]);
 
   // 进入界面加载
   useEffect(() => {
@@ -27,15 +31,7 @@ function App() {
         },
       }}
     >
-      <AntdApp>
-        <div style={{ position: 'fixed', right: 20, top: 20, zIndex: 1000 }}>
-          <Button shape="circle" onClick={() => setIsDark(!isDark)}>
-            {isDark ? '☀️' : '🌙'}
-          </Button>
-        </div>
-
-        <RouterProvider router={router} />
-      </AntdApp>
+      <RouterProvider router={router} />
     </ConfigProvider>
   );
 }

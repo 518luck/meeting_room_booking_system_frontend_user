@@ -1,8 +1,12 @@
 import { useNavigation, Outlet } from 'react-router-dom';
+import { App, Button } from 'antd';
+import useThemeStore from '@/store/theme';
 
 const AuthLayout: React.FC = () => {
   const navigation = useNavigation();
   const isLoading = navigation.state === 'loading';
+  const isDark = useThemeStore((state) => state.isDark);
+  const setIsDark = useThemeStore((state) => state.setIsDark);
 
   return (
     /* 💡 使用自定义变量 app-bg，确保背景色自动切换 */
@@ -21,7 +25,18 @@ const AuthLayout: React.FC = () => {
           </p>
         </div>
       )}
-
+      <App>
+        <div style={{ position: 'fixed', right: 20, top: 20, zIndex: 1000 }}>
+          <Button
+            shape="circle"
+            onClick={() => {
+              return setIsDark(!isDark);
+            }}
+          >
+            {isDark ? '☀️' : '🌙'}
+          </Button>
+        </div>
+      </App>
       <main>
         <Outlet />
       </main>

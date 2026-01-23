@@ -4,7 +4,7 @@ import { getUserInfo, updateInfo, updateInfoCaptcha } from '@/api/login';
 import { useState, useEffect } from 'react';
 import { throttle } from 'lodash-es';
 import { useNavigate } from 'react-router-dom';
-import { useAuthStore } from '@/store/auth';
+import useAuthStore from '@/store/auth';
 
 export interface UpdateInfoForm {
   headPic: string;
