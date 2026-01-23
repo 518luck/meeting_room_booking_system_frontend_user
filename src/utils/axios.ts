@@ -39,6 +39,9 @@ axiosInstance.interceptors.response.use(
   },
 
   async (error) => {
+    if (!error.response) {
+      return Promise.reject(error);
+    }
     // config : 用户发送请求的全部配置信息
     const { data, config } = error.response;
 

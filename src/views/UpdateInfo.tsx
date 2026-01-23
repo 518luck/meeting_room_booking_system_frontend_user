@@ -1,7 +1,6 @@
 import { Button, Form, Input, message } from 'antd';
-import type { FormProps } from 'antd';
 import { getUserInfo, updateInfo, updateInfoCaptcha } from '@/api/login';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import { throttle } from 'lodash-es';
 import { useNavigate } from 'react-router-dom';
 import useAuthStore from '@/store/auth';
@@ -30,13 +29,15 @@ const UpdateInfo = () => {
   useEffect(() => {
     async function query() {
       const res = await getUserInfo();
-
+      const { data } = res;
       if (res.code === 201 || res.code === 200) {
-        console.log(res.data);
+        form.setFieldValue('headPic', data.headPic);
+        form.setFieldValue('nickName', data.nickName);
+        form.setFieldValue('email', data.email);
       }
     }
     query();
-  }, []);
+  }, [form]);
 
   // 初始化表单数据
   useEffect(() => {
@@ -50,21 +51,22 @@ const UpdateInfo = () => {
   }, [userInfo, form]);
 
   // 更新用户信息
-  const onFinish: FormProps<UpdateInfoForm>['onFinish'] = async (values) => {
-    console.log('页面更新用户');
-
-    const res = await updateInfo(values);
-    console.log('🚀 ~ onFinish ~ res:', res);
-    if (res.code === 200) {
-      message.success('信息更新成功');
-      setTimeout(() => {
-        navigate('/');
-      }, 1500);
-    } else {
-      message.error(res.message || '信息更新失败');
-    }
-  };
-  const throttledOnFinish = throttle(onFinish, 500, { trailing: false });
+  const throttledOnFinish = useMemo(
+    () =>
+      throttle(
+        async (values: UpdateInfoForm) => {
+          const res = await updateInfo(values);
+          if (res.code === 200 || res.code === 201) {
+            message.success('信息更新成功');
+          } else {
+            message.error(res.message || '信息更新失败');
+          }
+        },
+        5000,
+        { trailing: false },
+      ),
+    [],
+  );
 
   // 发送验证码
   const sendCaptcha = async () => {
@@ -131,6 +133,7 @@ const UpdateInfo = () => {
               size="large"
               placeholder="请输入邮箱"
               className="rounded-lg"
+              disabled
             />
           </Form.Item>
 
