@@ -9,6 +9,7 @@ import { Breadcrumb, Layout, Menu, Avatar, Dropdown, theme } from 'antd';
 import useAuthStore from '@/store/auth';
 import useThemeStore from '@/store/theme';
 import { createElement } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 const { Header, Content, Footer, Sider } = Layout;
 
@@ -40,6 +41,8 @@ const items2: MenuProps['items'] = [
 
 const Home = () => {
   const setIsDark = useThemeStore((state) => state.setIsDark);
+  const navigate = useNavigate();
+
   const { userInfo } = useAuthStore();
   const {
     token: { colorBgContainer, borderRadiusLG },
@@ -68,7 +71,7 @@ const Home = () => {
     <Layout className="flex min-h-screen flex-col">
       <Header className="flex items-center justify-between bg-gray-900 px-12">
         <div className="flex flex-1 items-center">
-          <div className="mr-8 h-8 w-8 rounded bg-blue-500" />
+          {/* <div className="mr-8 h-8 w-8 rounded bg-blue-500" /> */}
           <Menu
             theme="dark"
             mode="horizontal"
@@ -82,7 +85,8 @@ const Home = () => {
           <Avatar
             size="large"
             icon={<UserOutlined />}
-            className="cursor-pointer transition-all hover:bg-blue-600"
+            className="cursor-pointer bg-blue-500/50 transition-all hover:bg-blue-600"
+            onClick={() => navigate('/update-info')}
           >
             {userInfo?.username?.[0]?.toUpperCase()}
           </Avatar>
