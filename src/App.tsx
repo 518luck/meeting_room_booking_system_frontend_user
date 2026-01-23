@@ -3,7 +3,7 @@ import { ConfigProvider, theme } from 'antd';
 import { RouterProvider } from 'react-router-dom';
 import router from '@/routers/index';
 import useThemeStore from '@/store/theme';
-
+import { StyleProvider } from '@ant-design/cssinjs';
 function App() {
   const isDark = useThemeStore((state) => state.isDark);
   const setIsDark = useThemeStore((state) => state.setIsDark);
@@ -23,16 +23,18 @@ function App() {
   }, [isDark]);
 
   return (
-    <ConfigProvider
-      theme={{
-        algorithm: isDark ? theme.darkAlgorithm : theme.defaultAlgorithm,
-        token: {
-          colorPrimary: '#1677ff',
-        },
-      }}
-    >
-      <RouterProvider router={router} />
-    </ConfigProvider>
+    <StyleProvider layer>
+      <ConfigProvider
+        theme={{
+          algorithm: isDark ? theme.darkAlgorithm : theme.defaultAlgorithm,
+          token: {
+            colorPrimary: '#1677ff',
+          },
+        }}
+      >
+        <RouterProvider router={router} />
+      </ConfigProvider>
+    </StyleProvider>
   );
 }
 

@@ -65,7 +65,7 @@ const Home = () => {
   ];
 
   return (
-    <Layout className="min-h-screen">
+    <Layout className="flex min-h-screen flex-col">
       <Header className="flex items-center justify-between bg-gray-900 px-12">
         <div className="flex flex-1 items-center">
           <div className="mr-8 h-8 w-8 rounded bg-blue-500" />
@@ -82,7 +82,7 @@ const Home = () => {
           <Avatar
             size="large"
             icon={<UserOutlined />}
-            className="cursor-pointer bg-blue-500 transition-all hover:bg-blue-600"
+            className="cursor-pointer transition-all hover:bg-blue-600"
           >
             {userInfo?.username?.[0]?.toUpperCase()}
           </Avatar>
@@ -93,14 +93,14 @@ const Home = () => {
         </div>
       </Header>
 
-      <div className="bg-app-bg px-12 py-0">
+      <div className="bg-app-bg flex flex-1 flex-col px-12 py-0">
         <Breadcrumb
           className="py-4"
           items={[{ title: 'Home' }, { title: 'List' }, { title: 'App' }]}
         />
 
         <Layout
-          className="rounded-lg bg-white p-6 shadow-sm dark:bg-zinc-900"
+          className="rounded-lg p-6 shadow-sm dark:bg-zinc-900"
           style={{
             background: colorBgContainer,
             borderRadius: borderRadiusLG,
