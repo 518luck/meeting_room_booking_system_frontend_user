@@ -1,5 +1,5 @@
 import { create } from 'zustand';
-import { persist } from 'zustand/middleware';
+import { persist, devtools } from 'zustand/middleware';
 import type { UserInfo, LoginDataResponse } from '@/api/login';
 
 interface AuthState {
@@ -12,25 +12,28 @@ interface AuthState {
 
 // 用户认证状态管理
 const useAuthStore = create<AuthState>()(
-  persist(
-    (set) => ({
-      accessToken: null,
-      refreshToken: null,
-      userInfo: null,
+  // 💡 第一层包裹 devtools
+  devtools(
+    // 💡 第二层包裹 persist
+    persist(
+      (set) => ({
+        accessToken: null,
+        refreshToken: null,
+        userInfo: null,
 
-      setAuth: ({ accessToken, refreshToken, userInfo }) =>
-        set({
-          accessToken,
-          refreshToken,
-          userInfo,
-        }),
-      clearAuth: () =>
-        set({ accessToken: null, refreshToken: null, userInfo: null }),
-    }),
+        setAuth: ({ accessToken, refreshToken, userInfo }) =>
+          set({ accessToken, refreshToken, userInfo }),
+
+        clearAuth: () =>
+          set({ accessToken: null, refreshToken: null, userInfo: null }),
+      }),
+      {
+        name: 'auth-storage',
+      },
+    ),
     {
-      name: 'auth-storage',
+      name: 'AuthStore', // 💡 在调试工具中显示的名称
     },
   ),
 );
-
 export default useAuthStore;

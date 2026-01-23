@@ -18,7 +18,7 @@ export interface UserInfo {
 export interface LoginDataResponse {
   accessToken: string;
   refreshToken: string;
-  userInfo: UserInfo;
+  userInfo?: UserInfo;
 }
 export interface LoginResponse {
   code: number;

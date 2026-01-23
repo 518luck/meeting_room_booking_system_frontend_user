@@ -1,5 +1,5 @@
 import { useEffect } from 'react';
-import { ConfigProvider, theme } from 'antd';
+import { ConfigProvider, theme, App as AntdApp } from 'antd';
 import { RouterProvider } from 'react-router-dom';
 import router from '@/routers/index';
 import useThemeStore from '@/store/theme';
@@ -32,7 +32,9 @@ function App() {
           },
         }}
       >
-        <RouterProvider router={router} />
+        <AntdApp>
+          <RouterProvider router={router} />
+        </AntdApp>
       </ConfigProvider>
     </StyleProvider>
   );
