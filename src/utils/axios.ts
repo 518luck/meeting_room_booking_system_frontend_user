@@ -48,9 +48,7 @@ axiosInstance.interceptors.response.use(
       return new Promise((resolve) => {
         queue.push({
           config,
-          resolve: () => {
-            resolve(axiosInstance(config));
-          },
+          resolve,
         });
       });
     }
@@ -61,40 +59,31 @@ axiosInstance.interceptors.response.use(
       //开启刷新token的锁
       refreshing = true;
 
-      try {
-        const refreshTokenStore = useAuthStore.getState().refreshToken || '';
-        const res = await refreshToken(refreshTokenStore);
+      // 用refreshToken刷新token
+      const refreshTokenStore = useAuthStore.getState().refreshToken || '';
+      const res = await refreshToken(refreshTokenStore);
 
-        if (res.code === 200 || res.code === 201) {
-          // 刷新成功后，更新 store 中的 token
-          useAuthStore.getState().setAuth(res.data);
-
-          // 重新发送队列中的请求
-          queue.forEach(({ config, resolve }) => {
-            if (config.headers) {
-              const newToken = useAuthStore.getState().accessToken || '';
-              config.headers.Authorization = `Bearer ${newToken}`;
-            }
-            resolve(axiosInstance(config));
-          });
-          queue.length = 0;
-          return axiosInstance(config); // 重发当前请求
-        } else {
-          throw new Error('Refresh token invalid');
-        }
-      } catch (err) {
-        queue.length = 0; // 清空队列
+      if (res.code === 200 || res.code === 201) {
+        // 刷新成功后，更新 store 中的 token
+        useAuthStore.getState().setAuth({
+          accessToken: res.data.access_token,
+          refreshToken: res.data.refresh_token,
+        });
+        // 重新发送队列中的请求
+        queue.forEach(({ config, resolve }) => {
+          resolve(axiosInstance(config));
+        });
+        queue.length = 0;
+        return axiosInstance(config); // 重发当前请求
+      } else {
         message.error('登录已过期，请重新登录');
         setTimeout(() => {
           window.location.href = '/auth/login';
         }, 1500);
-        return Promise.reject(err);
-      } finally {
-        // 【关键】无论 try 成功还是 catch 报错，最后都要把锁解开
-        refreshing = false;
       }
     } else {
       message.error(data.data);
+      return error.response;
     }
   },
 );

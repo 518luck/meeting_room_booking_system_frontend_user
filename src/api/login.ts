@@ -155,9 +155,13 @@ export async function updateInfo(
 
 //刷新token接口
 
+export interface RefreshTokenParams {
+  access_token: string;
+  refresh_token: string;
+}
 export interface RefreshTokenResponse {
   code: number;
-  data: LoginDataResponse;
+  data: RefreshTokenParams;
   message: string;
 }
 export async function refreshToken(
