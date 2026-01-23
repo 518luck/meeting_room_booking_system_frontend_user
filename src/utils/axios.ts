@@ -45,7 +45,7 @@ axiosInstance.interceptors.response.use(
     const { data, config } = error.response;
 
     console.log('请求到了');
-    // refreshing是 true 的话就证明token可能失效了,如果处于刷新状态就把请求挂起
+    // refreshing是 true 的话就证明token可能失效了,如果处于刷新状态就把请求挂起UnauthorizedException是401错误
     if (refreshing) {
       console.log('请求到了1231231');
       return new Promise((resolve) => {
@@ -53,6 +53,7 @@ axiosInstance.interceptors.response.use(
       });
     }
 
+    //401 是后端你dunauthorizedException产生的错误
     // config.url.includes 防止循环刷新,如果请求是 auth/refresh,则直接返回错误
     if (data?.code === 401 && !config.url.includes('/user/refresh')) {
       refreshing = true;
@@ -85,6 +86,9 @@ axiosInstance.interceptors.response.use(
         // 【关键】无论 try 成功还是 catch 报错，最后都要把锁解开
         refreshing = false;
       }
+    } else {
+      //
+      message.error(data.data);
     }
   },
 );
