@@ -68,7 +68,7 @@ export function HeadPicUpload(props: HeadPicUploadProps) {
     <div className="flex flex-col items-center">
       <Dragger
         {...uploadProps}
-        className="!rounded-full !border-2 !border-dashed !border-gray-300 !bg-gray-50 transition-all hover:!border-blue-400 hover:!bg-blue-50"
+        className="rounded-full border-2 border-dashed border-gray-300 bg-gray-50! transition-all hover:border-blue-400! hover:bg-blue-50!"
         style={{ width: 140, height: 140, padding: 0 }}
       >
         <div className="flex h-full flex-col items-center justify-center py-6">
