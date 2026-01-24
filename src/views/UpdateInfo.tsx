@@ -4,6 +4,7 @@ import { useState, useEffect, useMemo } from 'react';
 import { throttle } from 'lodash-es';
 import { useNavigate } from 'react-router-dom';
 import useAuthStore from '@/store/auth';
+import { HeadPicUpload } from '@/components/HeadPicUpload';
 
 export interface UpdateInfoForm {
   headPic: string;
@@ -102,10 +103,9 @@ const UpdateInfo = () => {
             name="headPic"
             rules={[{ required: true, message: '请输入头像地址!' }]}
           >
-            <Input
-              size="large"
-              placeholder="请输入头像地址"
-              className="rounded-lg"
+            <HeadPicUpload
+            // value={form.getFieldValue('headPic')}
+            // onChange={(value) => form.setFieldValue('headPic', value)}
             />
           </Form.Item>
 
