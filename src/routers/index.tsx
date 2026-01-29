@@ -9,14 +9,6 @@ const routers: RouteObject[] = [
     path: '/',
     Component: MainLayout,
     children: [
-      // 受保护路由（需要登录）
-      {
-        index: true,
-        lazy: async () => {
-          const module = await import('@/views/Home');
-          return { Component: module.default };
-        },
-      },
       {
         path: 'update-info',
         lazy: async () => {
