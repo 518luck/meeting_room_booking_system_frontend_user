@@ -1,12 +1,4 @@
-import {
-  Badge,
-  Button,
-  Form,
-  Input,
-  Popconfirm,
-  Table,
-  type TableProps,
-} from 'antd';
+import { Badge, Button, Form, Input, Table, type TableProps } from 'antd';
 import { useCallback, useMemo, useState } from 'react';
 import type { MeetingRoomItem } from '@/types/meetingRoom';
 import { useMeetingRoomList } from '@/hooks/apiMeetingRoomHooks';
@@ -43,6 +35,7 @@ const MeetingRoomManage = () => {
     pageSize,
     ...filteredParams,
   });
+
   // 解构列表信息
   let tableList;
   let tableTotal;
@@ -95,16 +88,8 @@ const MeetingRoomManage = () => {
       {
         title: '操作',
         render: (_, record) => (
-          <div className="flex">
-            <Popconfirm
-              title="会议室删除"
-              // onConfirm={() => mutate(record.id)}
-              description="确认删除该会议室吗？"
-              okText="确认"
-              cancelText="取消"
-            >
-              <a href="#">删除</a>
-            </Popconfirm>
+          <div>
+            <a href="#">预定</a>
           </div>
         ),
       },
@@ -126,9 +111,9 @@ const MeetingRoomManage = () => {
   }, []);
 
   return (
-    <div className="min-h-screen bg-gray-50 p-6">
+    <div className="min-h-screen bg-[var(--color-app-bg)] p-6 text-[var(--color-app-text)]">
       {/* 搜索表单卡片 */}
-      <div className="mb-6 rounded-lg bg-white p-6 shadow-sm">
+      <div className="mb-6 rounded-lg bg-[var(--color-app-card-bg)] p-6 shadow-sm">
         <Form
           form={form}
           onFinish={searchMeetingRoom}
@@ -160,7 +145,7 @@ const MeetingRoomManage = () => {
       </div>
 
       {/* 表格卡片 */}
-      <div className="rounded-lg bg-white p-6 shadow-sm">
+      <div className="rounded-lg bg-[var(--color-app-card-bg)] p-6 shadow-sm">
         <Table
           columns={columns}
           dataSource={tableList}
