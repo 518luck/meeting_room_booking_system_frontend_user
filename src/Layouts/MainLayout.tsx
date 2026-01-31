@@ -1,48 +1,42 @@
-import {
-  LaptopOutlined,
-  NotificationOutlined,
-  UserOutlined,
-  SettingOutlined,
-} from '@ant-design/icons';
+import { UserOutlined, SettingOutlined } from '@ant-design/icons';
 import type { MenuProps } from 'antd';
 import { Breadcrumb, Layout, Menu, Avatar, Dropdown, theme } from 'antd';
 import useAuthStore from '@/store/auth';
 import useThemeStore from '@/store/theme';
-import { createElement } from 'react';
 import { Outlet, useNavigate } from 'react-router-dom';
+import meetingRoutes from '@/routers/meeting';
 
 const { Header, Content, Footer, Sider } = Layout;
 
-const items1: MenuProps['items'] = ['1', '2', '3'].map((key) => ({
-  key,
-  label: `nav ${key}`,
-}));
-
-const items2: MenuProps['items'] = [
-  UserOutlined,
-  LaptopOutlined,
-  NotificationOutlined,
-].map((icon, index) => {
-  const key = String(index + 1);
+// 从路由文件过滤数组进行跳转
+const menuItems: MenuProps['items'] = meetingRoutes.map((item) => {
+  // 其实还可以在路由的handle中添加一个属性,来指定菜单的label
+  // 有子路由,则递归处理
+  const childrenItems = item.children
+    ? item.children.map((child) => ({
+        key: child.path,
+        label: child.handle?.label,
+      }))
+    : [];
 
   return {
-    key: `sub${key}`,
-    icon: <span className="text-app-text">{createElement(icon)}</span>,
-    label: `subnav ${key}`,
-    children: Array.from({ length: 4 }).map((_, j) => {
-      const subKey = index * 4 + j + 1;
-      return {
-        key: subKey,
-        label: `option${subKey}`,
-      };
-    }),
+    key: item.path || Math.random().toString(36).substring(2),
+    label: item.handle?.label,
+    children:
+      childrenItems && childrenItems.length > 0
+        ? childrenItems
+        : (undefined as MenuProps['items']),
   };
 });
-console.log('🚀 ~ items2:', items2);
 
 const MainLayout = () => {
   const setIsDark = useThemeStore((state) => state.setIsDark);
   const navigate = useNavigate();
+
+  // 处理菜单点击事件 (进行跳转)
+  const handleMenuClick: MenuProps['onClick'] = ({ key }) => {
+    navigate(key);
+  };
 
   const { userInfo } = useAuthStore();
   const {
@@ -71,16 +65,7 @@ const MainLayout = () => {
   return (
     <Layout className="flex min-h-screen flex-col">
       <Header className="flex items-center justify-between bg-gray-900 px-12">
-        <div className="flex flex-1 items-center">
-          {/* <div className="mr-8 h-8 w-8 rounded bg-blue-500" /> */}
-          <Menu
-            theme="dark"
-            mode="horizontal"
-            defaultSelectedKeys={['2']}
-            items={items1}
-            className="flex-1 border-none bg-transparent"
-          />
-        </div>
+        <div className="flex flex-1 items-center"></div>
 
         <div className="flex items-center gap-4">
           <Avatar
@@ -121,7 +106,8 @@ const MainLayout = () => {
               defaultSelectedKeys={['1']}
               defaultOpenKeys={['sub1']}
               className="h-full border-none"
-              items={items2}
+              items={menuItems}
+              onClick={handleMenuClick}
             />
           </Sider>
 

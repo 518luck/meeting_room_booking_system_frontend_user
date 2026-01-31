@@ -2,12 +2,14 @@ import { createBrowserRouter, type RouteObject } from 'react-router-dom';
 import ErrorPage from '@/views/ErrorPage';
 import AuthLayout from '@/Layouts/AuthLayout';
 import MainLayout from '@/Layouts/MainLayout';
-import authRoutes from './auth';
+import authRoutes from '@/routers/auth';
+import meetingRoutes from '@/routers/meeting';
 
 const routers: RouteObject[] = [
   {
     path: '/',
     Component: MainLayout,
+    children: [...meetingRoutes],
   },
   //修改信息
   {
