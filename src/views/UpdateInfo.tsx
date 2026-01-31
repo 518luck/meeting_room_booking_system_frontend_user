@@ -84,7 +84,7 @@ const UpdateInfo = () => {
   });
 
   return (
-    <div className="flex">
+    <div className="bg-app-bg flex min-h-screen">
       <div className="bg-app-bg mx-auto mt-24 w-96 rounded-2xl border border-gray-100 p-8 shadow-2xl transition-all duration-500 dark:border-zinc-800">
         <h1 className="text-app-text mb-8 text-center text-3xl font-bold tracking-tight">
           更新个人信息

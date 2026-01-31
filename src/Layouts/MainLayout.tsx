@@ -38,6 +38,7 @@ const items2: MenuProps['items'] = [
     }),
   };
 });
+console.log('🚀 ~ items2:', items2);
 
 const MainLayout = () => {
   const setIsDark = useThemeStore((state) => state.setIsDark);

@@ -8,15 +8,14 @@ const routers: RouteObject[] = [
   {
     path: '/',
     Component: MainLayout,
-    children: [
-      {
-        path: 'update-info',
-        lazy: async () => {
-          const module = await import('@/views/UpdateInfo');
-          return { Component: module.default };
-        },
-      },
-    ],
+  },
+  //修改信息
+  {
+    path: 'update-info',
+    lazy: async () => {
+      const module = await import('@/views/UpdateInfo');
+      return { Component: module.default };
+    },
   },
   // 公开路由（不需要登录）
   {
