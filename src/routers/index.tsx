@@ -1,4 +1,8 @@
-import { createBrowserRouter, type RouteObject } from 'react-router-dom';
+import {
+  createBrowserRouter,
+  Navigate,
+  type RouteObject,
+} from 'react-router-dom';
 import ErrorPage from '@/views/ErrorPage';
 import AuthLayout from '@/Layouts/AuthLayout';
 import MainLayout from '@/Layouts/MainLayout';
@@ -9,7 +13,14 @@ const routers: RouteObject[] = [
   {
     path: '/',
     Component: MainLayout,
-    children: [...meetingRoutes],
+
+    children: [
+      {
+        index: true,
+        element: <Navigate to="/meeting-list" replace />,
+      },
+      ...meetingRoutes,
+    ],
   },
   //修改信息
   {
