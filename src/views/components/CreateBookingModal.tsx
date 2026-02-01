@@ -1,21 +1,11 @@
-import {
-  DatePicker,
-  Form,
-  Input,
-  InputNumber,
-  Modal,
-  Select,
-  TimePicker,
-  message,
-} from 'antd';
+import { DatePicker, Form, Input, Modal, TimePicker } from 'antd';
 import { useForm } from 'antd/es/form/Form';
-// import { bookingAdd } from '../../interface/interfaces';
-// import { MeetingRoomSearchResult } from './MeetingRoomList';
+import type { MeetingRoomItem } from '@/types/meetingRoom';
 
 interface CreateBookingModalProps {
   isOpen: boolean;
   handleClose: () => void;
-  meetingRoom: MeetingRoomSearchResult;
+  meetingRoom?: MeetingRoomItem;
 }
 
 const layout = {
@@ -32,7 +22,7 @@ export interface CreateBooking {
   note: string;
 }
 
-export function CreateBookingModal(props: CreateBookingModalProps) {
+const CreateBookingModal = (props: CreateBookingModalProps) => {
   const [form] = useForm<CreateBooking>();
 
   const handleOk = async function () {};
@@ -47,7 +37,7 @@ export function CreateBookingModal(props: CreateBookingModalProps) {
     >
       <Form form={form} colon={false} {...layout}>
         <Form.Item label="会议室名称" name="meetingRoomId">
-          {props.meetingRoom.name}
+          {props.meetingRoom?.name}
         </Form.Item>
 
         <Form.Item
@@ -88,4 +78,6 @@ export function CreateBookingModal(props: CreateBookingModalProps) {
       </Form>
     </Modal>
   );
-}
+};
+
+export default CreateBookingModal;

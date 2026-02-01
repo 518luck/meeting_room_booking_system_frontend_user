@@ -6,6 +6,7 @@ import { apply, bookingList, reject, unbind } from '@/api/booking';
 export const useBookingList = (params: SearchBookingParams) => {
   const filteredSearchBookingParams = Object.fromEntries(
     Object.entries(params.searchBooking).filter(
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
       ([_, value]) => value !== undefined,
     ),
   );

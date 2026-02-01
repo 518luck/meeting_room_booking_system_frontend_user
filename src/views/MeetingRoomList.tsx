@@ -2,9 +2,8 @@ import { Badge, Button, Form, Input, Table, type TableProps } from 'antd';
 import { useCallback, useMemo, useState } from 'react';
 import type { MeetingRoomItem } from '@/types/meetingRoom';
 import { useMeetingRoomList } from '@/hooks/apiMeetingRoomHooks';
+import CreateBookingModal from '@/views/components/CreateBookingModal';
 const { useForm } = Form;
-// import { CreateMeetingRoomModal } from '@/views/components/CreateMeetingRoomModal';
-// import { UpdateMeetingRoomModal } from '@/views/components/UpdateMeetingRoom';
 
 interface SearchMeetingRoom {
   name?: string;
@@ -21,6 +20,9 @@ const MeetingRoomManage = () => {
       capacity: undefined,
       equipment: '',
     });
+  const [isCreateModalOpen, setIsCreateModalOpen] = useState(false); // 创建预约模态框是否打开
+  const [currentMeetingRoom, setCurrentMeetingRoom] =
+    useState<MeetingRoomItem>(); // 当前选中的会议室数据
 
   // 过滤空字符串 ,null , undefined
   const filteredParams = Object.fromEntries(
@@ -89,7 +91,15 @@ const MeetingRoomManage = () => {
         title: '操作',
         render: (_, record) => (
           <div>
-            <a href="#">预定</a>
+            <a
+              href="#"
+              onClick={() => {
+                setIsCreateModalOpen(true);
+                setCurrentMeetingRoom(record);
+              }}
+            >
+              预定
+            </a>
           </div>
         ),
       },
@@ -111,9 +121,9 @@ const MeetingRoomManage = () => {
   }, []);
 
   return (
-    <div className="min-h-screen bg-[var(--color-app-bg)] p-6 text-[var(--color-app-text)]">
+    <div className="bg-app-bg text-app-text min-h-screen p-6">
       {/* 搜索表单卡片 */}
-      <div className="mb-6 rounded-lg bg-[var(--color-app-card-bg)] p-6 shadow-sm">
+      <div className="bg-app-card-bg mb-6 rounded-lg p-6 shadow-sm">
         <Form
           form={form}
           onFinish={searchMeetingRoom}
@@ -145,7 +155,7 @@ const MeetingRoomManage = () => {
       </div>
 
       {/* 表格卡片 */}
-      <div className="rounded-lg bg-[var(--color-app-card-bg)] p-6 shadow-sm">
+      <div className="bg-app-card-bg rounded-lg p-6 shadow-sm">
         <Table
           columns={columns}
           dataSource={tableList}
@@ -158,6 +168,11 @@ const MeetingRoomManage = () => {
           rowKey="id"
         />
       </div>
+      <CreateBookingModal
+        isOpen={isCreateModalOpen}
+        handleClose={() => setIsCreateModalOpen(false)}
+        meetingRoom={currentMeetingRoom}
+      />
     </div>
   );
 };
