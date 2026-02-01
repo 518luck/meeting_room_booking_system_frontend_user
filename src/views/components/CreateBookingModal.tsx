@@ -1,11 +1,13 @@
-import { DatePicker, Form, Input, Modal, TimePicker } from 'antd';
+import { DatePicker, Form, Input, message, Modal, TimePicker } from 'antd';
 import { useForm } from 'antd/es/form/Form';
 import type { MeetingRoomItem } from '@/types/meetingRoom';
+import type { CreateBooking } from '@/types/booking';
+import { bookingAdd } from '@/api/booking';
 
 interface CreateBookingModalProps {
   isOpen: boolean;
   handleClose: () => void;
-  meetingRoom?: MeetingRoomItem;
+  meetingRoom: MeetingRoomItem;
 }
 
 const layout = {
@@ -13,19 +15,23 @@ const layout = {
   wrapperCol: { span: 18 },
 };
 
-export interface CreateBooking {
-  meetingRoomId: number;
-  rangeStartDate: Date;
-  rangeStartTime: Date;
-  rangeEndDate: Date;
-  rangeEndTime: Date;
-  note: string;
-}
-
 const CreateBookingModal = (props: CreateBookingModalProps) => {
   const [form] = useForm<CreateBooking>();
 
-  const handleOk = async function () {};
+  const handleOk = async function () {
+    const values = form.getFieldsValue();
+    values.meetingRoomId = props.meetingRoom.id;
+
+    const res = await bookingAdd(values);
+
+    if (res.code === 201 || res.code === 200) {
+      message.success('预定成功');
+      form.resetFields();
+      props.handleClose();
+    } else {
+      message.error(res.data);
+    }
+  };
 
   return (
     <Modal

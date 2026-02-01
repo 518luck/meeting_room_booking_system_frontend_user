@@ -15,3 +15,13 @@ export interface SearchBookingParams {
   pageNo: number;
   pageSize: number;
 }
+
+// 预约申请参数
+export interface CreateBooking {
+  meetingRoomId: number;
+  rangeStartDate: Date;
+  rangeStartTime: Date;
+  rangeEndDate: Date;
+  rangeEndTime: Date;
+  note: string;
+}

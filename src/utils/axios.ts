@@ -45,6 +45,13 @@ axiosInstance.interceptors.response.use(
     // config : 用户发送请求的全部配置信息
     const { data, config } = error.response;
 
+    if (config.url.includes('/user/refresh')) {
+      refreshing = false;
+      queue.length = 0;
+      message.error('登录过期，请重新登录');
+      window.location.href = '/auth/login';
+      return Promise.reject(error);
+    }
     // refreshing是 true 的话就证明token可能失效了,如果处于刷新状态就把请求挂起存入队列当中
     // UnauthorizedException是401错误
     if (refreshing) {
@@ -55,7 +62,6 @@ axiosInstance.interceptors.response.use(
         });
       });
     }
-
     //401 是后端你dunauthorizedException产生的错误
     // config.url.includes 防止循环刷新,如果请求是 auth/refresh,则直接返回错误
     if (data?.code === 401 && !config.url.includes('/user/refresh')) {

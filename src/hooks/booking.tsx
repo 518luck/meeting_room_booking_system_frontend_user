@@ -1,6 +1,6 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import type { SearchBookingParams } from '@/types/booking';
-import { apply, bookingList, reject, unbind } from '@/api/booking';
+import { apply, bookingList, unbind } from '@/api/booking';
 
 // 获取预约列表
 export const useBookingList = (params: SearchBookingParams) => {
@@ -30,20 +30,6 @@ export const useApplyBooking = () => {
     mutationFn: (id: number) => apply(id), // 执行申请操作
     onSuccess: () => {
       // 💡 重点：当申请成功后，让所有以 "bookingList" 开头的缓存失效
-      queryClient.invalidateQueries({ queryKey: ['bookingList'] });
-      // 这会导致正在显示的列表立即发起新的请求，从而刷新界面
-    },
-  });
-};
-
-// 预约拒绝
-export const useRejectBooking = () => {
-  const queryClient = useQueryClient();
-
-  return useMutation({
-    mutationFn: (id: number) => reject(id), // 执行拒绝操作
-    onSuccess: () => {
-      // 💡 重点：当拒绝成功后，让所有以 "bookingList" 开头的缓存失效
       queryClient.invalidateQueries({ queryKey: ['bookingList'] });
       // 这会导致正在显示的列表立即发起新的请求，从而刷新界面
     },

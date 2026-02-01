@@ -1,6 +1,7 @@
 import axiosInstance from '@/utils/axios';
 import dayjs from 'dayjs';
-import type { SearchBookingParams } from '@/types/booking';
+import type { SearchBookingParams, CreateBooking } from '@/types/booking';
+import type { ApiResponse } from '@/types/meetingRoom';
 
 // 预约列表
 export async function bookingList({
@@ -51,12 +52,29 @@ export async function apply(id: number) {
   return await axiosInstance.get('/booking/apply/' + id);
 }
 
-// 预约拒绝
-export async function reject(id: number) {
-  return await axiosInstance.get('/booking/reject/' + id);
-}
-
 // 已解除
 export async function unbind(id: number) {
   return await axiosInstance.get('/booking/unbind/' + id);
+}
+
+// 预约添加
+export async function bookingAdd(
+  booking: CreateBooking,
+): Promise<ApiResponse<string>> {
+  const rangeStartDateStr = dayjs(booking.rangeStartDate).format('YYYY-MM-DD');
+  const rangeStartTimeStr = dayjs(booking.rangeStartTime).format('HH:mm');
+  const startTime = dayjs(
+    rangeStartDateStr + ' ' + rangeStartTimeStr,
+  ).valueOf();
+
+  const rangeEndDateStr = dayjs(booking.rangeEndDate).format('YYYY-MM-DD');
+  const rangeEndTimeStr = dayjs(booking.rangeEndTime).format('HH:mm');
+  const endTime = dayjs(rangeEndDateStr + ' ' + rangeEndTimeStr).valueOf();
+
+  return await axiosInstance.post('/booking/add', {
+    meetingRoomId: booking.meetingRoomId,
+    startTime,
+    endTime,
+    note: booking.note,
+  });
 }

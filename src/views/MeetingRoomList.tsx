@@ -171,7 +171,7 @@ const MeetingRoomManage = () => {
       <CreateBookingModal
         isOpen={isCreateModalOpen}
         handleClose={() => setIsCreateModalOpen(false)}
-        meetingRoom={currentMeetingRoom}
+        meetingRoom={currentMeetingRoom!}
       />
     </div>
   );
