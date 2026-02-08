@@ -70,6 +70,7 @@ const MainLayout = () => {
         <div className="flex items-center gap-4">
           <Avatar
             size="large"
+            src={userInfo?.headPic}
             icon={<UserOutlined />}
             className="cursor-pointer bg-blue-500/50 transition-all hover:bg-blue-600"
             onClick={() => navigate('/update-info')}
