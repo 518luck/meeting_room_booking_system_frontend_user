@@ -153,6 +153,22 @@ export async function updateInfo(
   return await axiosInstance.post('/user/update', params);
 }
 
+// 图片上传
+export interface UploadImageResponse {
+  code: number;
+  data: string;
+  message: string;
+}
+export async function getPresignedUrl(
+  name: string,
+): Promise<UploadImageResponse> {
+  return await axiosInstance.get('/minio/presignedUrl', {
+    params: {
+      name,
+    },
+  });
+}
+
 //刷新token接口
 export interface RefreshTokenParams {
   access_token: string;

@@ -5,6 +5,8 @@ import {
 } from '@ant-design/icons';
 import { message, Upload, Avatar } from 'antd';
 import type { UploadProps } from 'antd';
+import { getPresignedUrl } from '@/api/login';
+import axios from 'axios';
 
 const { Dragger } = Upload;
 
@@ -16,13 +18,23 @@ interface HeadPicUploadProps {
 export function HeadPicUpload(props: HeadPicUploadProps) {
   const uploadProps: UploadProps = {
     name: 'file',
-    action: 'http://localhost:3000/user/upload',
+    action: async (file) => {
+      const res = await getPresignedUrl(file.name);
+      return res.data;
+    },
+    async customRequest(options) {
+      const { onSuccess, file, action } = options;
+      const res = await axios.put(action, file);
+      onSuccess!(res.data);
+    },
     showUploadList: false,
     accept: 'image/*',
     onChange(info) {
       const { status } = info.file;
       if (status === 'done') {
-        props.onChange?.(info.file.response.data);
+        props?.onChange?.(
+          'http://localhost:9000/meeting-room-booking-system/' + info.file.name,
+        );
         message.success(`头像上传成功`);
       } else if (status === 'error') {
         message.error(`头像上传失败，请重试`);
@@ -41,7 +53,7 @@ export function HeadPicUpload(props: HeadPicUploadProps) {
         <div className="group relative">
           <Avatar
             size={120}
-            src={'http://localhost:3000/' + props.value}
+            src={props.value}
             className="border-4 border-white shadow-lg"
           />
           <div className="absolute inset-0 flex items-center justify-center gap-2 rounded-full bg-black/50 opacity-0 transition-opacity group-hover:opacity-100">

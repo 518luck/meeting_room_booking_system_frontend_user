@@ -8,6 +8,7 @@ interface AuthState {
   userInfo: UserInfo | null;
   setAuth: (data: LoginDataResponse) => void;
   clearAuth: () => void;
+  updateUserInfo: (info: Partial<UserInfo>) => void;
 }
 
 // 用户认证状态管理
@@ -26,6 +27,14 @@ const useAuthStore = create<AuthState>()(
 
         clearAuth: () =>
           set({ accessToken: null, refreshToken: null, userInfo: null }),
+
+        // 实现更新逻辑
+        updateUserInfo: (info: Partial<UserInfo>) =>
+          set((state) => ({
+            userInfo: state.userInfo
+              ? { ...state.userInfo, ...info }
+              : (info as UserInfo),
+          })),
       }),
       {
         name: 'auth-storage',

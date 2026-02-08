@@ -18,6 +18,7 @@ const UpdateInfo = () => {
   const [countdown, setCountdown] = useState(0);
   const navigate = useNavigate();
   const userInfo = useAuthStore((state) => state.userInfo);
+  const updateUserInfo = useAuthStore((state) => state.updateUserInfo);
 
   useEffect(() => {
     if (countdown > 0) {
@@ -59,6 +60,11 @@ const UpdateInfo = () => {
           const res = await updateInfo(values);
           if (res.code === 200 || res.code === 201) {
             message.success('信息更新成功');
+
+            updateUserInfo({
+              headPic: values.headPic,
+              nickName: values.nickName,
+            });
           } else {
             message.error(res.message || '信息更新失败');
           }
@@ -66,7 +72,7 @@ const UpdateInfo = () => {
         5000,
         { trailing: false },
       ),
-    [],
+    [updateUserInfo],
   );
 
   // 发送验证码
