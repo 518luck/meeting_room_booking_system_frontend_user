@@ -2,7 +2,7 @@ import { Badge, Button, Form, Input, Table, type TableProps } from 'antd';
 import { useCallback, useMemo, useState } from 'react';
 import type { MeetingRoomItem } from '@/types/meetingRoom';
 import { useMeetingRoomList } from '@/hooks/apiMeetingRoomHooks';
-import CreateBookingModal from '@/views/components/CreateBookingModal';
+import CreateBookingModal from '@/components/CreateBookingModal';
 const { useForm } = Form;
 
 interface SearchMeetingRoom {
