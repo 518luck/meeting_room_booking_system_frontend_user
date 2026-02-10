@@ -86,6 +86,19 @@ const Login = () => {
           </Form.Item>
 
           <Form.Item>
+            <div>
+              <a
+                href="#"
+                onClick={() => {
+                  window.location.href = 'http://localhost:3000/user/google';
+                }}
+              >
+                Google 账号登录
+              </a>
+            </div>
+          </Form.Item>
+
+          <Form.Item>
             <div className="flex items-center justify-between text-sm">
               <a
                 className="text-blue-600 transition-colors hover:text-blue-500"

@@ -1,8 +1,10 @@
 import { Badge, Button, Form, Input, Table, type TableProps } from 'antd';
-import { useCallback, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import type { MeetingRoomItem } from '@/types/meetingRoom';
 import { useMeetingRoomList } from '@/hooks/apiMeetingRoomHooks';
 import CreateBookingModal from '@/components/CreateBookingModal';
+import useAuthStore from '@/store/auth';
+import cookies from 'js-cookie';
 const { useForm } = Form;
 
 interface SearchMeetingRoom {
@@ -23,6 +25,24 @@ const MeetingRoomManage = () => {
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false); // 创建预约模态框是否打开
   const [currentMeetingRoom, setCurrentMeetingRoom] =
     useState<MeetingRoomItem>(); // 当前选中的会议室数据
+  const setAuth = useAuthStore((store) => store.setAuth);
+
+  useEffect(() => {
+    const userInfo = cookies.get('userInfo');
+    const accessToken = cookies.get('accessToken');
+    const refreshToken = cookies.get('refreshToken');
+
+    if (userInfo && accessToken && refreshToken) {
+      setAuth({
+        userInfo: JSON.parse(userInfo),
+        accessToken,
+        refreshToken,
+      });
+      cookies.remove('userInfo');
+      cookies.remove('accessToken');
+      cookies.remove('refreshToken');
+    }
+  }, [setAuth]);
 
   // 过滤空字符串 ,null , undefined
   const filteredParams = Object.fromEntries(
