@@ -19,6 +19,8 @@ export function HeadPicUpload(props: HeadPicUploadProps) {
   const uploadProps: UploadProps = {
     name: 'file',
     action: async (file) => {
+      console.log('触发了');
+
       const res = await getPresignedUrl(file.name);
       return res.data;
     },
@@ -33,7 +35,8 @@ export function HeadPicUpload(props: HeadPicUploadProps) {
       const { status } = info.file;
       if (status === 'done') {
         props?.onChange?.(
-          'http://localhost:9000/meeting-room-booking-system/' + info.file.name,
+          'http://minio-container:9000/meeting-room-booking-system/' +
+            info.file.name,
         );
         message.success(`头像上传成功`);
       } else if (status === 'error') {
